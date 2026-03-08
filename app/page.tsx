@@ -4,7 +4,7 @@ import EventCard from "./components/EventCard";
 import { cacheLife } from "next/cache";
 import { events, Event } from "@/lib/constants";
 
-const Base_Url = process.env.NEXT_PUBLIC_BASE_URL;
+// const Base_Url = process.env.NEXT_PUBLIC_BASE_URL;
 
 const page = async () => {
   "use cache";

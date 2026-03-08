@@ -50,7 +50,7 @@ BookingSchema.pre('save', async function () {
         error.name = 'ValidationError';
         throw error;
       }
-    } catch (err) {
+    } catch  {
       const validationError = new Error('Invalid events ID format or database error');
       validationError.name = 'ValidationError';
       throw validationError;
