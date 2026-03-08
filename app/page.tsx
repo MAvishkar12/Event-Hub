@@ -20,7 +20,7 @@ const page = async () => {
     <section>
       <h1 className="text-center">
         The Hub for Every Dev <br />
-        Event you{" "}
+        Event you know{" "}
       </h1>
       <p className="text-center mt-5">
         Hackatons, Meetups and Conference, All in One Place{" "}

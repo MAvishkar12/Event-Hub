@@ -146,6 +146,10 @@ yarn dev
 
 Visit : https://dev-event-hub-khaki.vercel.app/
 
+![HomePage](image.png)
+![DetailPage](image-1.png)
+![DetailPage_bottom](image-2.png)
+
 ---
 
 ## 🔐 Environment Variables
