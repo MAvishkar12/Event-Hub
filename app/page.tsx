@@ -3,7 +3,7 @@ import ExploreBtn from "./components/ExploreBtn";
 import EventCard from "./components/EventCard";
 import { IEvent } from "@/database";
 import { cacheLife } from "next/cache";
-
+import { events } from "@/lib/constants";
 const Base_Url = process.env.NEXT_PUBLIC_BASE_URL;
 
 const page = async () => {
@@ -34,7 +34,7 @@ const page = async () => {
         <ul className="events list-none">
           {events.length > 0 ? (
             events.map((event: IEvent) => (
-              // ✅ FIX 4: Use unique _id as key instead of title
+           
               <li key={String(event._id)}>
                 <EventCard
                   title={event.title}

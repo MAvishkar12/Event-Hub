@@ -31,7 +31,7 @@ const EventCard = ({ title, image, slug, location, date, time }: Props) => {
           width={410}
           className="poster"
           height={300}
-          quality={100}
+          quality={75}
         />
     
       <div className="flex flex-row gap-2">
