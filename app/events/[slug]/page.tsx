@@ -77,7 +77,7 @@ const EventsDetailsPage = async ({
   if (!description) return notFound();
   const bookings = 10;
   const similarEvents: IEvent[] = await getSimilartEventsBySlug(slug);
- console.log("similar events",similarEvents);
+
  
   return (
     <section id="event">
