@@ -1,23 +1,20 @@
 import React from "react";
 import ExploreBtn from "./components/ExploreBtn";
 import EventCard from "./components/EventCard";
-import { IEvent } from "@/database";
 import { cacheLife } from "next/cache";
-import { events } from "@/lib/constants";
+import { events, Event } from "@/lib/constants";
+
 const Base_Url = process.env.NEXT_PUBLIC_BASE_URL;
 
 const page = async () => {
   "use cache";
-  cacheLife('hours')
-  
-  const response = await fetch(`${Base_Url}/api/events`, {
-    cache: "no-store", 
-  });
+  cacheLife("hours");
 
-  const data = await response.json();
-
-  
-  const events: IEvent[] = data.events ?? [];
+  // const response = await fetch(`${Base_Url}/api/events`, {
+  //   cache: "no-store",
+  // });
+  // const data = await response.json();
+  // const events: Event[] = data.events ?? [];
 
   return (
     <section>
@@ -33,9 +30,8 @@ const page = async () => {
         <h3>Featured Events</h3>
         <ul className="events list-none">
           {events.length > 0 ? (
-            events.map((event: IEvent) => (
-           
-              <li key={String(event._id)}>
+            events.map((event: Event) => (
+              <li key={event.slug}>
                 <EventCard
                   title={event.title}
                   image={event.image}

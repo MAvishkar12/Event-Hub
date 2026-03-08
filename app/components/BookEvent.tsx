@@ -6,7 +6,9 @@ const BookEvent = () => {
   const [submit, setSubmit] = useState(false);
   const handleSubmit=(e:React.FormEvent)=>{
       e.preventDefault()
+      if(!email) return;
       setTimeout(() => {
+       
         setSubmit(true)
       }, 1000);
 

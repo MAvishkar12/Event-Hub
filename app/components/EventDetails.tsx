@@ -1,13 +1,18 @@
 import React from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { json } from "stream/consumers";
 import BookEvent from "@/app/components/BookEvent";
-import { getSimilartEventsBySlug } from "@/lib/actions/event.actions";
-const Base_Url = process.env.NEXT_PUBLIC_BASE_URL;
-import { IEvent } from "@/database";
+import { cacheLife } from "next/cache";
+import { events, Event } from "@/lib/constants";
 import EventCard from "@/app/components/EventCard";
-import { cacheLife} from "next/cache";
+
+const formatDate = (date: Date | string): string => {
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
 
 const EventDetailItem = ({
   icon,
@@ -18,7 +23,7 @@ const EventDetailItem = ({
   alt: string;
   label: string;
 }) => (
-  <div className="flex-row-gap-2 items-center">
+  <div className="flex flex-row gap-2 items-center">
     <Image src={icon} alt={alt} width={17} height={17} />
     <p>{label}</p>
   </div>
@@ -50,37 +55,36 @@ const EventDetails = async ({
 }: {
   params: Promise<{ slug: string }>;
 }) => {
-    "use cache"
-    cacheLife('hours')
+  "use cache";
+  cacheLife("hours");
+
   const { slug } = await params;
-  const request = await fetch(`${Base_Url}/api/events/${slug}`);
+
+  // Find event from constants instead of API
+  const event: Event | undefined = events.find((e) => e.slug === slug);
+
+  if (!event) return notFound();
+
   const {
-    event: {
-      description,
-      image,
-      overview,
-      date,
-      time,
-      location,
-      mode,
-      agenda,
-      audience,
-      tags,
-      organizer,
-    },
-  } = await request.json();
+    description,
+    image,
+    overview,
+    date,
+    time,
+    location,
+    mode,
+    agenda,
+    audience,
+    tags,
+    organizer,
+  } = event;
 
-  const formatDate = (date: Date | string): string => {
-    return new Date(date).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
+  // Similar events: share at least one tag, exclude current event
+  const similarEvents: Event[] = events.filter(
+    (e) => e.slug !== slug && e.tags.some((tag) => tags.includes(tag))
+  );
 
-  if (!description) return notFound();
   const bookings = 10;
-  const similarEvents: IEvent[] = await getSimilartEventsBySlug(slug);
 
   return (
     <section id="event">
@@ -98,7 +102,7 @@ const EventDetails = async ({
             className="banner"
           />
           <section className="flex-col-gap-2">
-            <h2>OverView</h2>
+            <h2>Overview</h2>
             <p>{overview}</p>
           </section>
           <section className="flex-col-gap-2">
@@ -123,11 +127,12 @@ const EventDetails = async ({
           </section>
 
           <EventAgenda agendaItems={agenda} />
+
           <section className="flex-col-gap-2">
             <h2>About the Organizer</h2>
             <p>{organizer}</p>
           </section>
-          {/* <EventTags tags={JSON.parse(tags[0])} */}
+
           <EventTags tags={tags} />
         </div>
         <aside className="booking">
@@ -135,8 +140,7 @@ const EventDetails = async ({
             <h2>Book Your Spot</h2>
             {bookings > 0 ? (
               <p className="text-sm">
-                {" "}
-                Join {bookings} people who already booked their spot{" "}
+                Join {bookings} people who already booked their spot
               </p>
             ) : (
               <p className="text-sm">Be the first to book your spot</p>
@@ -149,10 +153,13 @@ const EventDetails = async ({
       <div className="flex w-full flex-col gap-4 pt-20">
         <h2>Similar Events</h2>
         <div className="events">
-          {similarEvents.length > 0 &&
-            similarEvents.map((val: IEvent) => (
-              <EventCard key={val.title} {...val} />
-            ))}
+          {similarEvents.length > 0 ? (
+            similarEvents.map((val: Event) => (
+              <EventCard key={val.slug} {...val} />
+            ))
+          ) : (
+            <p>No similar events found.</p>
+          )}
         </div>
       </div>
     </section>
